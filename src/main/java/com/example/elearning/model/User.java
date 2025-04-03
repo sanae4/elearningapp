@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Date;
 
 @Entity
+
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,4 +104,16 @@ public class User {
     }
 
 
+    @OneToOne(cascade = CascadeType.ALL) // Cascade pour sauvegarder l'adresse automatiquement
+    @JoinColumn(name = "adresse_id", referencedColumnName = "id")
+    private Adresse adresse;
+
+    // Getters and Setters
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
 }

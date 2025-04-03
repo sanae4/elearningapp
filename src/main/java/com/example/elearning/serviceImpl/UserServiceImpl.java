@@ -1,6 +1,10 @@
 package com.example.elearning.serviceImpl;
 
+import com.example.elearning.model.Enseignant;
+import com.example.elearning.model.Etudiant;
 import com.example.elearning.model.User;
+import com.example.elearning.repository.EnseignantRepository;
+import com.example.elearning.repository.EtudiantRepository;
 import com.example.elearning.repository.UserRepository;
 import com.example.elearning.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,21 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EnseignantRepository enseignantRepository;
 
+    @Autowired
+    private EtudiantRepository etudiantRepository;
+
+    @Override
+    public void saveEnseignant(Enseignant enseignant) {
+        enseignantRepository.save(enseignant);
+    }
+
+    @Override
+    public void saveEtudiant(Etudiant etudiant) {
+        etudiantRepository.save(etudiant);
+    }
     @Override
     public User registerUser(User user) {
         // Vérifier si l'email existe déjà
@@ -37,5 +55,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Utilisateur non trouvé avec l'email : " + email);
         }
         return user;
+    }
+    @Override
+    public void deleteUser(Long id) {
+        // Vérifiez si l'utilisateur existe avant de le supprimer
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Utilisateur non trouvé avec l'ID : " + id);
+        }
     }
 }

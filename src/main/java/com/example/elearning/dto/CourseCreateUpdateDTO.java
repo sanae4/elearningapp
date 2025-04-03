@@ -5,13 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseDTO {
-    private Long id;
+public class CourseCreateUpdateDTO {
     private String about;
     private String courselevel;
     private String titreCours;
@@ -24,12 +22,7 @@ public class CourseDTO {
 
     // Références aux entités liées
     private Long enseignantId;
-    private String enseignantNom; // Pour afficher le nom de l'enseignant
 
     // Ajout de la référence à la catégorie
     private Long categoryId;
-    private String categoryTitre; // Pour afficher le titre de la catégorie
-
-    // IDs des étudiants inscrits
-    private Set<Long> etudiantIds;
 }

@@ -1,10 +1,12 @@
 package com.example.elearning.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,14 +23,19 @@ public class CourseDTO {
     private String image;
     private String langage;
     private String statusCours;
-
+    @JsonProperty("lecons")
+    private List<LeçonDTO> lecons;
     // Références aux entités liées
     private Long enseignantId;
     private String enseignantNom; // Pour afficher le nom de l'enseignant
 
     // Ajout de la référence à la catégorie
     private Long categoryId;
-    private String categoryTitre; // Pour afficher le titre de la catégorie
+    // Ajouter un objet EnseignantDTO complet au lieu d'un simple ID
+    private EnseignantDTO enseignant;
+
+    // Ajouter un objet CategoryDTO complet au lieu d'un simple ID
+    private CategoryDTO category;
 
     // IDs des étudiants inscrits
     private Set<Long> etudiantIds;

@@ -21,4 +21,6 @@ public interface CourseService {
     List<CourseDTO> searchCoursesByTitle(String title);
     List<CourseDTO> getCoursesByLevel(String level);
     List<CourseDTO> getCoursesByLanguage(String language);
-}
+     CourseDTO updateCourseStatus(Long id, String status) ;
+
+    }

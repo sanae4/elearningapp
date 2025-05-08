@@ -20,7 +20,7 @@ public class JwtUtil {
 
     // Clé secrète pour signer le token JWT
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512); // Utilisation de HS512
-    private static final long EXPIRATION_TIME = 864_000_000; // 10 jours
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
     // Générer un token JWT avec le rôle de l'utilisateur
 // Générer un token JWT avec le rôle et l'ID de l'utilisateur

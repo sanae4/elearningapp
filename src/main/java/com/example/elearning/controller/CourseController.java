@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/course")
@@ -71,5 +72,20 @@ public class CourseController {
     @GetMapping("/language/{language}")
     public ResponseEntity<List<CourseDTO>> getCoursesByLanguage(@PathVariable String language) {
         return ResponseEntity.ok(courseService.getCoursesByLanguage(language));
+    }
+    // In CourseController.java
+    @PutMapping("/{id}/status")
+    public ResponseEntity<CourseDTO> updateCourseStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> statusUpdate
+    ) {
+        return ResponseEntity.ok(
+                courseService.updateCourseStatus(id, statusUpdate.get("status"))
+        );
+    }
+    @PutMapping("/{id}/publish")
+    public ResponseEntity<CourseDTO> publishCourse(@PathVariable Long id) {
+        CourseDTO updatedCourse = courseService.updateCourseStatus(id, "PUBLISHED");
+        return ResponseEntity.ok(updatedCourse);
     }
 }

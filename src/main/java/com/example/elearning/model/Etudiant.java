@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -20,4 +21,7 @@ public class Etudiant extends User {
     )
     @JsonBackReference
     private Set<Course> courses;
+    // Relation avec les rapports (correction du mappedBy)
+    @ManyToMany(mappedBy = "etudiants") // Changement de "etudiant" à "etudiants"
+    private List<Rapport> rapports;
 }

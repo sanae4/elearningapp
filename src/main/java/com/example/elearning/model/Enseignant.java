@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,10 +16,9 @@ public class Enseignant extends User {
     private boolean status;
     private String specialite;
     private String anneesExperience;
-
-    @OneToMany(mappedBy = "enseignant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<Course> courses;
+    @OneToMany(mappedBy = "enseignant", cascade = CascadeType.ALL)
+    private List<Course> courses;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,4 +31,6 @@ public class Enseignant extends User {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
+    @OneToMany(mappedBy = "enseignant", cascade = CascadeType.ALL)
+    private List<Rapport> rapports;
 }

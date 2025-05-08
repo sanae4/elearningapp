@@ -33,7 +33,7 @@ public class CategoryController {
 
 
 
-    // Autres méthodes...
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id, @RequestHeader(value = "Authorization", required = false) String authHeader) {

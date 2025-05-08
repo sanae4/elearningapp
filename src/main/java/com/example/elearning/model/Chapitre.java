@@ -14,13 +14,16 @@ public class Chapitre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String resumer;
+
     private String titre;
     private String type; // Vidéo, Texte, etc.
-    private String contenu;
-
+    @Lob
+    private byte[] contenu;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String resumer;
     // Relation Many-to-One avec Leçon
     @ManyToOne
-    @JoinColumn(name = "leçon_id", nullable = false)
-    private Leçon leçon;
+    @JoinColumn(name = "lecon_id", nullable = false)
+    private Leçon lecon;
 }

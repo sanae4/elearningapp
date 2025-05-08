@@ -2,9 +2,12 @@ package com.example.elearning.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -33,13 +36,19 @@ public class Leçon {
     public void setUseAI(boolean useAI) {
         this.useAI = useAI;
     }
+    // Dans la classe Lecon
+    @OneToOne(mappedBy = "lecon", cascade = CascadeType.ALL)
+    @JsonManagedReference("lecon-quiz")
+    private Quiz quiz;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-
+    @OneToMany(mappedBy = "lecon", cascade = CascadeType.ALL)
+    @JsonManagedReference // This is the forward part of the reference
+    private List<Chapitre> chapitres;
 
     public void supprimerLeçon() {
         this.estSupprimé = true;

@@ -1,7 +1,9 @@
 package com.example.elearning.serviceImpl;
 
+import com.example.elearning.dto.CategoryDTO;
 import com.example.elearning.dto.CourseCreateUpdateDTO;
 import com.example.elearning.dto.CourseDTO;
+import com.example.elearning.dto.EnseignantDTO;
 import com.example.elearning.model.Category;
 import com.example.elearning.model.Course;
 import com.example.elearning.model.Enseignant;
@@ -96,6 +98,15 @@ public class CourseServiceImpl implements CourseService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    // In CourseService.java
+    public CourseDTO updateCourseStatus(Long id, String status) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+        course.setStatusCours(status);
+        Course updatedCourse = courseRepository.save(course);
+        return convertToDTO(updatedCourse);
+    }
 
     @Override
     public List<CourseDTO> getCoursesByLevel(String level) {
@@ -127,14 +138,40 @@ public class CourseServiceImpl implements CourseService {
 
         // Gestion de l'enseignant
         if (course.getEnseignant() != null) {
+            // Conserver ces champs pour la rétrocompatibilité
             dto.setEnseignantId(course.getEnseignant().getId());
-            dto.setEnseignantNom(course.getEnseignant().getNom()); // Supposant que l'enseignant a un attribut nom
+            dto.setEnseignantNom(course.getEnseignant().getNom());
+
+            // Créer l'objet EnseignantDTO complet
+            EnseignantDTO enseignantDTO = new EnseignantDTO();
+            enseignantDTO.setId(course.getEnseignant().getId());
+            enseignantDTO.setNom(course.getEnseignant().getNom());
+            enseignantDTO.setPrenom(course.getEnseignant().getPrenom());
+            enseignantDTO.setBiographie(course.getEnseignant().getBiographie());
+            enseignantDTO.setStatus(course.getEnseignant().isStatus());
+            enseignantDTO.setSpecialite(course.getEnseignant().getSpecialite());
+            enseignantDTO.setAnneesExperience(course.getEnseignant().getAnneesExperience());
+
+            dto.setEnseignant(enseignantDTO);
         }
 
         // Gestion de la catégorie
         if (course.getCategory() != null) {
+            // Conserver ce champ pour la rétrocompatibilité
             dto.setCategoryId(course.getCategory().getId());
-            dto.setCategoryTitre(course.getCategory().getTitre());
+
+            // Créer l'objet CategoryDTO
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(course.getCategory().getId());
+            categoryDTO.setTitre(course.getCategory().getTitre());
+            categoryDTO.setDescription(course.getCategory().getDescription());
+            categoryDTO.setIcon(course.getCategory().getIcon());
+
+            if (course.getCategory().getParentCategory() != null) {
+                categoryDTO.setParentCategoryId(course.getCategory().getParentCategory().getId());
+            }
+
+            dto.setCategory(categoryDTO);
         }
 
         // Gestion des étudiants

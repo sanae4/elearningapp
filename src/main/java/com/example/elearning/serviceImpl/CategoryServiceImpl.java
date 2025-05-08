@@ -56,6 +56,15 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Catégorie non trouvée avec l'ID: " + id));
 
+        // Vérifier si rien n'a changé pour éviter des mises à jour inutiles
+        if (Objects.equals(category.getTitre(), categoryDTO.getTitre()) &&
+                Objects.equals(category.getDescription(), categoryDTO.getDescription()) &&
+                Objects.equals(category.getIcon(), categoryDTO.getIcon()) &&
+                Objects.equals(category.getParentCategory() != null ?
+                        category.getParentCategory().getId() : null, categoryDTO.getParentCategoryId())) {
+            return convertToDTOSafe(category);
+        }
+
         updateCategoryFromDTO(category, categoryDTO);
         Category updatedCategory = categoryRepository.save(category);
         return convertToDTOSafe(updatedCategory);
@@ -157,11 +166,42 @@ public class CategoryServiceImpl implements CategoryService {
 
         // Gestion de la catégorie parente
         if (dto.getParentCategoryId() != null) {
+            // Vérifier si l'ID parent n'est pas le même que l'ID de la catégorie actuelle
+            if (category.getId() != null && category.getId().equals(dto.getParentCategoryId())) {
+                throw new IllegalArgumentException("Une catégorie ne peut pas être sa propre catégorie parente.");
+            }
+
             Category parentCategory = categoryRepository.findById(dto.getParentCategoryId())
                     .orElseThrow(() -> new EntityNotFoundException("Catégorie parente non trouvée avec l'ID: " + dto.getParentCategoryId()));
+
+            // Vérifier si la catégorie parent n'est pas une sous-catégorie de la catégorie actuelle
+            // pour éviter les cycles
+            if (isChildOf(parentCategory, category)) {
+                throw new IllegalArgumentException("La catégorie parente choisie est déjà une sous-catégorie de cette catégorie.");
+            }
+
             category.setParentCategory(parentCategory);
         } else {
             category.setParentCategory(null);
         }
     }
+
+    // Ajouter cette méthode pour vérifier si un cycle serait créé
+    private boolean isChildOf(Category potentialChild, Category potentialParent) {
+        if (potentialChild == null || potentialParent == null || potentialParent.getId() == null) {
+            return false;
+        }
+
+        // Vérifier la hiérarchie des catégories pour détecter les cycles
+        Category current = potentialChild;
+        while (current != null && current.getParentCategory() != null) {
+            if (potentialParent.getId().equals(current.getId())) {
+                return true;
+            }
+            current = current.getParentCategory();
+        }
+
+        return false;
+    }
+
 }

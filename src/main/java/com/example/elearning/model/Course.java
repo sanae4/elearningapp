@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -29,7 +26,8 @@ public class Course {
     @Column(columnDefinition = "LONGTEXT")
     private String image;
     private String langage;
-    private String statusCours;
+
+    private String statusCours; //(APPROVED,PUBLISHED,DRAFT)
 
     @ManyToOne
     @JoinColumn(name = "enseignant_id", nullable = false)
@@ -48,6 +46,12 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Leçon> leçons;
+
+    // Dans la classe Course, changez de @OneToMany à @OneToOne
+    @OneToOne(mappedBy = "course", cascade = CascadeType.ALL)
+    @JsonManagedReference("course-quiz")
+    private Quiz quiz;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,4 +65,40 @@ public class Course {
         return id != null ? id.hashCode() : 0;
     }
 
+    /**
+     * Ajoute un quiz au cours
+     * @param quiz Quiz à ajouter
+     */
+    public void ajouterQuiz(Quiz quiz) {
+        quiz.setCourse(this);
+        this.quiz = quiz;
+    }
+
+    /**
+     * Supprime le quiz du cours
+     */
+    public void supprimerQuiz() {
+        if (this.quiz != null) {
+            this.quiz.setCourse(null);
+            this.quiz = null;
+        }
+    }
+
+    /**
+     * Génère automatiquement un quiz basé sur le contenu du cours
+     * @return Quiz généré
+     */
+    public Quiz genererQuizAutomatique() {
+        Quiz quiz = new Quiz();
+        quiz.setCourse(this);
+        quiz.setTitre("Quiz automatique - " + this.titreCours);
+        quiz.setEstsupprimer(false);
+        quiz.setQuizType("COURSE");
+
+        // Appel à la méthode de génération automatique du quiz
+        quiz.genererQuiz();
+
+        this.quiz = quiz;
+        return quiz;
+    }
 }

@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Désactiver CSRF pour les API REST
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurer CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/**","/api/course/**", "/api/category","/api/category/**","/api/lecons/**","/api/chapitre/**", "/api/chapitre/**", "/api/users/send-verification-code","/enseignant","/api/users/enseignant","/api/auth/login","/api/users/etudiant").permitAll() // Autoriser l'accès sans authentification
+                        .requestMatchers("/api/users/**","/api/course/**", "/api/category", "/api/enseignant/**","/api/category/**","/api/lecons/**","/api/chapitre/**",  "/api/resultat/**","/api/quizz/**","/api/question/**","/api/users/send-verification-code","/enseignant","/api/users/enseignant","/api/auth/login","/api/users/etudiant").permitAll() // Autoriser l'accès sans authentification
                         .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
                 )
                 .httpBasic(withDefaults()) // Utiliser l'authentification de base
